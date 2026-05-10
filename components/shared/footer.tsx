@@ -77,19 +77,32 @@ export default function Footer() {
           </div>
 
           {/* 2. Navigation */}
-          <div>
-            <h4 className="font-bold text-[#FDBA12] mb-8 text-xs uppercase tracking-[0.3em]">Quick Access</h4>
-            <ul className="space-y-4">
-              {['Home', 'About Us', 'Programs', 'Mentorship', 'Contact'].map((item) => (
-                <li key={item}>
-                  <NextLink href="#" className="text-white/80 hover:text-white text-sm font-semibold transition-all flex items-center gap-2 group">
-                    <div className="w-1.5 h-1.5 bg-[#FDBA12] rounded-full scale-0 group-hover:scale-100 transition-transform" />
-                    {item}
-                  </NextLink>
-                </li>
-              ))}
-            </ul>
-          </div>
+<div>
+  <h4 className="font-bold text-[#FDBA12] mb-8 text-xs uppercase tracking-[0.3em]">Quick Access</h4>
+  <ul className="space-y-4">
+    {[
+      { name: 'Home', path: '/' },
+      { name: 'About Us', path: '/about-tutified' },
+      { name: 'Programs', path: '/programs' },
+      { name: 'Mentorship', path: '/mentorship' },
+      { name: 'Contact', path: '/contact' }
+    ].map((item) => (
+      <li key={item.name}>
+        <NextLink 
+          href={item.path} 
+          className="text-white/60 hover:text-white text-sm font-bold transition-all flex items-center gap-2 group"
+        >
+          {/* The dot only appears on hover */}
+          <div className="w-1.5 h-1.5 bg-[#FDBA12] rounded-full scale-0 group-hover:scale-100 transition-transform duration-300" />
+          
+          <span className="group-hover:translate-x-1 transition-transform duration-300">
+            {item.name}
+          </span>
+        </NextLink>
+      </li>
+    ))}
+  </ul>
+</div>
 
           {/* 3. Contact Details */}
           <div>
@@ -128,18 +141,40 @@ export default function Footer() {
 
         {/* --- BOTTOM BAR --- */}
         <div className="pt-12 border-t border-white/10 flex flex-col lg:flex-row justify-between items-center gap-8 text-center lg:text-left">
-          <div className="flex flex-wrap justify-center gap-8">
-            {['Privacy Policy', 'Terms of Service', 'Refunds'].map((link) => (
-              <NextLink key={link} href="#" className="text-[10px] font-black text-white/40 hover:text-[#FDBA12] uppercase tracking-[0.2em] transition-all">
-                {link}
-              </NextLink>
-            ))}
-          </div>
+  <div className="flex flex-wrap justify-center gap-8">
+    {[
+      { name: 'Disclaimer', path: '/disclaimer' },
+      { name: 'Privacy Policy', path: '/privacypolicy' },
+      { name: 'Terms of Service', path: '/terms-of-service' },
+      { name: 'Refunds', path: '/refund-policy' }
+    ].map((link) => (
+      <NextLink 
+        key={link.name} 
+        href={link.path} 
+        className="text-[10px] font-black text-white/40 hover:text-[#FDBA12] uppercase tracking-[0.2em] transition-all relative group"
+      >
+        {link.name}
+        {/* Subtle underline effect on hover */}
+        <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#FDBA12] transition-all group-hover:w-full" />
+      </NextLink>
+    ))}
+  </div>
 
           <div className="flex flex-col items-center lg:items-end gap-3">
              <div className="flex items-center gap-3 px-6 py-2.5 rounded-full bg-white text-[#5051CE] shadow-2xl">
                 <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60">Subsidiary of</span>
-                <span className="text-xs font-black tracking-widest uppercase">TRIARCH GROUP</span>
+                <a 
+  href="https://triarchgroup.in" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  className="group flex items-center gap-2"
+>
+  <span className="text-[10px] font-black tracking-[0.3em] uppercase text-blue/40 group-hover:text-[#FDBA12] transition-all duration-300 cursor-pointer">
+    TRIARCH GROUP
+  </span>
+  {/* Optional: Add a tiny external arrow that appears on hover */}
+  <ArrowUpRight size={10} className="text-[#FDBA12] opacity-0 group-hover:opacity-100 transition-all -translate-y-1" />
+</a>
              </div>
              <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">
                 © {currentYear} Tutified. All Rights Reserved.

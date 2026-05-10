@@ -25,9 +25,9 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/", active: true },
-    { name: "About", href: "/about" },
+    { name: "About", href: "/about-tutified" },
     { name: "Our Programs", href: "/programs" },
-    { name: "Why Choose Us", href: "/why" },
+    { name: "Why Choose Us", href: "/why-choose-us" },
     { name: "Mentorship", href: "/mentorship" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },

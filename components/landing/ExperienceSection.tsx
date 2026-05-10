@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
-import { LineChart, ClipboardCheck, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { LineChart, ClipboardCheck, LayoutDashboard, ShieldCheck,ArrowUpRight, MessageSquare } from "lucide-react";
+ import Link from "next/link";
 
 const features = [
   {
@@ -84,14 +85,36 @@ export default function ExperienceSection() {
             <p className="text-white/50 font-medium">Join 500+ families who trust Tutified for excellence.</p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 relative z-10">
-            <button className="bg-[#FDBA12] text-[#0F172A] px-10 py-4 rounded-2xl font-black hover:scale-105 transition-transform shadow-xl shadow-[#FDBA12]/20">
-              BOOK FREE DEMO
-            </button>
-            <button className="border border-white/20 text-white px-8 py-4 rounded-2xl font-bold hover:bg-white/5 transition-colors">
-              VIEW PROGRAMS
-            </button>
-          </div>
+         
+
+
+<div className="flex flex-col sm:flex-row gap-4 items-center">
+  {/* 1. PRIMARY ACTION: BOOK FREE DEMO (WhatsApp Link) */}
+  <Link 
+    href="https://wa.me/919315956745?text=Hello%20Tutified!%20I%20would%20like%20to%20book%20a%20FREE%20pedagogical%20demo%20session%20for%20my%20child."
+    target="_blank"
+    className="w-full sm:w-auto"
+  >
+    <button className="w-full bg-[#FDBA12] text-[#0F172A] px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#FDBA12]/20 flex items-center justify-center gap-3">
+      Book Free Demo <MessageSquare size={16} />
+    </button>
+  </Link>
+
+  {/* 2. SECONDARY ACTION: VIEW PROGRAMS */}
+  {/* 2. SECONDARY ACTION: VIEW PROGRAMS */}
+<motion.div
+  whileHover={{ scale: 1.02 }}
+  whileTap={{ scale: 0.98 }}
+  className="w-full sm:w-auto"
+>
+  <Link 
+    href="/programs" 
+    className="w-full border border-white/20 text-white px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white/10 transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
+  >
+    View Programs <ArrowUpRight size={16} className="opacity-50" />
+  </Link>
+</motion.div>
+</div>
         </motion.div>
       </div>
     </section>
