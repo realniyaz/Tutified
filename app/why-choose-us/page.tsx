@@ -1,243 +1,263 @@
 "use client";
-import { useState, useRef } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useState, useMemo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/shared/navbar";
 import Footer from "@/components/shared/footer";
 import { 
-  ShieldCheck, Zap, Fingerprint, Search, X,
-  BarChart3, Layers, Microscope, ArrowRight, Star,
-  CheckCircle2, TrendingUp, FileText
+  X, Phone, MessageCircle, ChevronRight, 
+  BookOpen, Trophy, Rocket, Sparkles,
+  CheckCircle2, ArrowUpRight, GraduationCap, 
+  Beaker, Landmark, Palette, Zap,
+  LucideIcon
 } from "lucide-react";
 
-// --- ANIMATION VARIANTS ---
-const FADE_UP = {
-  hidden: { opacity: 0, y: 40, filter: "blur(12px)" },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    filter: "blur(0px)", 
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const } 
+// --- PROGRAM DATA ---
+const PROGRAMS = [
+  {
+    id: "juniors",
+    title: "Junior Foundation",
+    grade: "Classes 1st - 5th",
+    tagline: "Building Cognitive Sovereignty",
+    icon: Sparkles,
+    color: "#5051CE",
+    accent: "bg-indigo-50/50",
+    description: "The most critical phase of neural development. Our Junior Foundation builds the 'Learning OS' through logic and linguistic fluency.",
+    curriculum: [
+      { goal: "Logic Hub", detail: "Mathematical puzzles and mental math labs." },
+      { goal: "Language Lab", detail: "Reading comprehension and expressive vocabulary." }
+    ],
+    outcomes: ["Analytical Thinking", "Public Speaking", "Math Speed"],
+  },
+  {
+    id: "middle",
+    title: "Mid-School Mastery",
+    grade: "Classes 6th - 8th",
+    tagline: "The Logical Transition",
+    icon: BookOpen,
+    color: "#0F172A",
+    accent: "bg-slate-50",
+    description: "Bridging elementary curiosity and competitive rigor. We introduce structured note-taking and deep subject specialization.",
+    curriculum: [
+      { goal: "Advanced Algebra", detail: "Establishing the foundation for higher math." },
+      { goal: "Digital Resource", detail: "Curated notes and video context for every unit." }
+    ],
+    outcomes: ["Note-taking Habits", "Self-Study Protocols", "Unit Mastery"],
+  },
+  {
+    id: "prep",
+    title: "Board Practice",
+    grade: "Classes 9th & 10th",
+    tagline: "Institutional Performance",
+    icon: Trophy,
+    color: "#FDBA12",
+    accent: "bg-amber-50/50",
+    description: "High-intensity board preparation. We focus on answer-writing aesthetics, speed-drills, and mental conditioning.",
+    curriculum: [
+      { goal: "PYQ Audits", detail: "10-year paper analysis and trend prediction." },
+      { goal: "Speed Drills", detail: "Completing 3-hour papers in 2.5 hours." }
+    ],
+    outcomes: ["Board Mastery", "Time Management", "Pressure Resilience"],
+  },
+  {
+    id: "higher",
+    title: "Higher Mastery",
+    grade: "Classes 11th & 12th",
+    tagline: "Stream Specific Sovereignty",
+    icon: Rocket,
+    color: "#3B82F6",
+    accent: "bg-sky-50/50",
+    description: "The peak of school education. We provide stream-specific mentors who have themselves conquered national-level entrance exams.",
+    isSpecial: true,
+    streams: [
+      { 
+        name: "Science (PCM/PCB)", 
+        icon: Beaker, 
+        focus: "JEE, NEET, BITSAT", 
+        details: "Intensive focus on Physics derivations, Organic logic, and Biology diagnostics." 
+      },
+      { 
+        name: "Commerce", 
+        icon: Landmark, 
+        focus: "CUET, CA, IPMAT", 
+        details: "Mastery in Accountancy and Economics with industry-case studies." 
+      },
+      { 
+        name: "Humanities", 
+        icon: Palette, 
+        focus: "CUET, CLAT", 
+        details: "Deep dive into Political Science and Psychology with critical answer drafting." 
+      }
+    ],
+    outcomes: ["Entrance Readiness", "University Roadmap"],
   }
-};
+];
 
-export default function WhyChooseUsPage() {
-  const [showAudit, setShowAudit] = useState(false);
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
+export default function FinalProgramsPage() {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const activeData = useMemo(() => PROGRAMS.find(p => p.id === selectedId), [selectedId]);
 
-  const scanY = useTransform(scrollYProgress, [0, 1], ["-10%", "110%"]);
+  useEffect(() => {
+    if (selectedId) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = 'unset';
+  }, [selectedId]);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-white font-jakarta selection:bg-[#5051CE]/20">
+    <div className="min-h-screen bg-white font-jakarta selection:bg-[#5051CE]/20 overflow-x-hidden">
       <Navbar />
 
-      {/* --- SECTION 1: HERO MANIFESTO --- */}
-      <section className="relative pt-44 pb-32 overflow-hidden bg-[#F8FAFF]">
-        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-          <motion.div initial="hidden" animate="visible" variants={FADE_UP}>
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white rounded-full border border-slate-100 mb-8 shadow-sm">
-              <Fingerprint size={14} className="text-[#5051CE]" />
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">The Verification Standard</p>
-            </div>
-            <h1 className="text-6xl md:text-[9rem] font-black text-[#0F172A] tracking-tighter leading-[0.8] mb-12">
-              Beyond <br />
-              <span className="font-serif italic font-light text-[#5051CE]">Tuition.</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-slate-500 font-medium leading-relaxed max-w-3xl mx-auto">
-              We don't just find tutors. We engineer success through a proprietary 
-              <span className="text-[#0F172A] font-bold"> Audit Framework</span> built in collaboration with Triarch Group.
-            </p>
+      {/* --- HERO --- */}
+      <section className="relative pt-32 md:pt-44 pb-12 md:pb-24 px-6 bg-[#F8FAFF] overflow-hidden">
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-3 px-4 py-2 bg-white rounded-full border border-slate-100 mb-6 md:mb-8 shadow-sm">
+             <Zap size={12} className="text-[#FDBA12]" fill="#FDBA12" />
+             <p className="text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Institutional Curricula</p>
           </motion.div>
-        </div>
-        
-        <div className="absolute inset-0 pointer-events-none opacity-20">
-            <div className="absolute top-1/4 left-10 w-24 h-24 border border-slate-200 rounded-3xl rotate-12 flex items-center justify-center"><Search size={20} className="text-slate-300" /></div>
-            <div className="absolute bottom-1/4 right-10 w-32 h-32 border border-slate-200 rounded-[2rem] -rotate-12 flex items-center justify-center"><BarChart3 size={32} className="text-slate-300" /></div>
+          <h1 className="text-5xl md:text-[9.5rem] font-black text-[#0F172A] tracking-tighter leading-[0.9] md:leading-[0.8] mb-8">
+            Academic <br />
+            <span className="font-serif italic font-light text-[#5051CE]">Programs.</span>
+          </h1>
         </div>
       </section>
 
-      {/* --- SECTION 2: THE 10% AUDIT --- */}
-      <section className="py-32 px-6">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={FADE_UP}>
-            <h2 className="text-5xl md:text-7xl font-black text-[#0F172A] tracking-tighter mb-8 leading-[0.9]">
-              The 1-in-10 <br /> <span className="text-[#5051CE]">Protocol.</span>
-            </h2>
-            <p className="text-slate-500 text-lg font-medium leading-relaxed mb-12">
-              Most platforms are marketplaces; we are an institution. Every mentor undergoes the **Triarch Quality Audit**—a four-stage vetting process that ensures pedagogical mastery and safety.
-            </p>
-            <div className="space-y-6">
-              {[
-                { title: "Psychometric Evaluation", desc: "Assessing mentor temperament and student empathy." },
-                { title: "Pedagogical Demo", desc: "Live session audit by our Faculty Board." },
-                { title: "Background Forensic", desc: "Multi-layer address and document verification." }
-              ].map((item, i) => (
-                <div key={i} className="flex gap-6 group">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-[#5051CE] group-hover:bg-[#5051CE] group-hover:text-white transition-all">
-                    <ShieldCheck size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-[#0F172A] text-sm uppercase tracking-widest">{item.title}</h4>
-                    <p className="text-xs text-slate-400 font-medium">{item.desc}</p>
-                  </div>
+      {/* --- PROGRAM GRID --- */}
+      <section className="py-12 md:py-24 px-4 md:px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {PROGRAMS.map((program) => (
+          <motion.div
+            layoutId={`card-${program.id}`}
+            key={program.id}
+            onClick={() => setSelectedId(program.id)}
+            whileHover={{ y: -8 }}
+            className={`${program.accent} group cursor-pointer p-8 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] border border-transparent hover:border-[#5051CE]/10 transition-all relative overflow-hidden flex flex-col justify-between min-h-96 shadow-sm`}
+          >
+            <div className="relative z-10">
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white shadow-lg flex items-center justify-center mb-8 md:mb-10 group-hover:rotate-[12deg] transition-transform">
+                <program.icon style={{ color: program.color }} className="w-6 h-6 md:w-7 md:h-7" />
+              </div>
+              <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{program.grade}</p>
+              <h3 className="text-2xl md:text-3xl font-black text-[#0F172A] tracking-tighter leading-tight mb-6">{program.title}</h3>
+              
+              {program.isSpecial && (
+                <div className="flex flex-wrap gap-2 mb-6">
+                   {["Science", "Commerce", "Arts"].map(s => (
+                     <span key={s} className="px-3 py-1 bg-white/60 rounded-full text-[7px] md:text-[8px] font-black uppercase text-[#3B82F6] border border-sky-100">{s}</span>
+                   ))}
                 </div>
-              ))}
+              )}
             </div>
-          </motion.div>
-
-          <div className="relative bg-[#0F172A] rounded-[4rem] h-[600px] overflow-hidden p-12 border-[12px] border-slate-100 shadow-2xl">
-            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 0)', backgroundSize: '30px 30px' }} />
-            <motion.div style={{ top: scanY }} className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FDBA12] to-transparent z-20 shadow-[0_0_20px_#FDBA12]" />
-            <div className="relative z-10 flex flex-col justify-center h-full">
-               <div className="space-y-8">
-                  {[0.1, 0.4, 0.7].map((delay, i) => (
-                    <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay }} className="p-6 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-md">
-                      <div className="w-8 h-2 bg-white/20 rounded-full mb-3" />
-                      <div className="w-full h-4 bg-white/5 rounded-full" />
-                    </motion.div>
-                  ))}
-                  <div className="text-center pt-10">
-                    <p className="text-6xl font-black text-[#FDBA12] mb-2 tracking-tighter">10%</p>
-                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-[0.3em]">Selection Rate</p>
-                  </div>
-               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- SECTION 3: TRIARCH GROUP SYNERGY --- */}
-      <section className="py-32 px-6 bg-[#0F172A] relative overflow-hidden">
-        <div className="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={FADE_UP}>
-            <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center border border-white/10 mb-10 mx-auto">
-              <Layers className="text-[#FDBA12]" size={32} />
-            </div>
-            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-8 leading-tight">
-              Institutionalized by <br /> <span className="text-[#5051CE]">Triarch Group.</span>
-            </h2>
-            <p className="text-white/60 text-lg md:text-xl font-medium leading-relaxed max-w-3xl mx-auto mb-16">
-              Tutified is powered by the operational infrastructure of **Triarch Group**. This synergy allows us to provide industrial-grade security for your home tuition and data.
-            </p>
             
-            <div className="grid md:grid-cols-3 gap-8 w-full">
-              {[
-                { label: "Data Architecture", desc: "Triarch-secured encryption for all residential data.", icon: ShieldCheck },
-                { label: "Pedagogical Labs", desc: "Curriculum developed by Triarch Academic Board.", icon: Microscope },
-                { label: "System Uptime", desc: "99.9% uptime for the Tutified Parent Dashboard.", icon: Zap }
-              ].map((box, i) => (
-                <div key={i} className="p-10 bg-white/5 border border-white/10 rounded-[3rem] text-left hover:bg-white/10 transition-all">
-                  <box.icon className="text-[#FDBA12] mb-6" size={28} />
-                  <h4 className="text-white font-black text-lg mb-2">{box.label}</h4>
-                  <p className="text-white/40 text-sm font-medium leading-relaxed">{box.desc}</p>
-                </div>
-              ))}
+            <div className="relative z-10 mt-auto">
+              <button className="flex items-center gap-3 bg-white px-5 md:px-6 py-3 rounded-xl md:rounded-2xl text-[9px] md:text-[10px] font-black uppercase tracking-widest text-[#0F172A] shadow-sm group-hover:bg-[#5051CE] group-hover:text-white transition-all">
+                View Details <ArrowUpRight size={14} />
+              </button>
             </div>
+
+            <program.icon className="absolute -bottom-10 -right-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity w-32 h-32 md:w-48 md:h-48" />
           </motion.div>
-        </div>
-        <div className="absolute -bottom-20 -right-20 opacity-[0.02]">
-           <Star size={600} strokeWidth={0.5} className="text-white" />
-        </div>
+        ))}
       </section>
 
-      {/* --- SECTION 4: THE RESULT ENGINE --- */}
-      <section className="py-32 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-20">
-          <div className="md:w-1/2">
-             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={FADE_UP}>
-                <h2 className="text-5xl md:text-7xl font-black text-[#0F172A] tracking-tighter mb-8 leading-[0.9]">
-                  Monthly <br /> <span className="text-[#5051CE]">Audit Reports.</span>
-                </h2>
-                <p className="text-slate-500 text-lg font-medium leading-relaxed mb-10">
-                  Transparency is our product. Every month, you receive a detailed **Performance Audit** highlighting your child's progress, learning gaps, and upcoming strategy.
-                </p>
-                {/* FUNCTIONAL BUTTON */}
-                <button 
-                  onClick={() => setShowAudit(true)}
-                  className="inline-flex items-center gap-4 bg-[#0F172A] text-white px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
-                >
-                  View Sample Audit <ArrowRight size={14} className="text-[#FDBA12]" />
-                </button>
-             </motion.div>
-          </div>
-          <div className="md:w-1/2 grid grid-cols-2 gap-4">
-             <div className="space-y-4 pt-12">
-               <div className="h-64 bg-slate-50 rounded-[3rem] border border-slate-100 p-8 flex flex-col justify-end">
-                  <BarChart3 className="text-[#5051CE] mb-4" size={32} />
-                  <p className="text-xs font-black text-[#0F172A] uppercase tracking-widest">Growth Metrics</p>
-               </div>
-               <div className="h-48 bg-[#FDBA12] rounded-[3rem] p-8 flex flex-col justify-end">
-                  <Star className="text-[#0F172A] mb-4" size={32} fill="#0F172A" />
-                  <p className="text-xs font-black text-[#0F172A] uppercase tracking-widest">Parent Choice</p>
-               </div>
-             </div>
-             <div className="space-y-4">
-               <div className="h-48 bg-[#5051CE] rounded-[3rem] p-8 flex flex-col justify-end text-white">
-                  <Zap className="text-white mb-4" size={32} />
-                  <p className="text-xs font-black uppercase tracking-widest">Insta-Connect</p>
-               </div>
-               <div className="h-64 bg-[#0F172A] rounded-[3rem] p-8 flex flex-col justify-end text-white">
-                  <ShieldCheck className="text-[#FDBA12] mb-4" size={32} />
-                  <p className="text-xs font-black uppercase tracking-widest">Verified 100%</p>
-               </div>
-             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- THE SAMPLE AUDIT MODAL --- */}
+      {/* --- RESPONSIVE MODAL --- */}
       <AnimatePresence>
-        {showAudit && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-10">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowAudit(false)} className="absolute inset-0 bg-[#0F172A]/90 backdrop-blur-xl" />
-            <motion.div initial={{ opacity: 0, scale: 0.9, y: 40 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 40 }} className="relative w-full max-w-5xl bg-white rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh]">
-              {/* Sidebar: Institutional Branding */}
-              <div className="bg-[#0F172A] md:w-[300px] p-10 text-white flex flex-col justify-between border-r border-white/5">
+        {selectedId && activeData && (
+          <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedId(null)} className="absolute inset-0 bg-[#0F172A]/90 backdrop-blur-md md:backdrop-blur-xl" />
+            
+            <motion.div 
+              layoutId={`card-${selectedId}`} 
+              className="bg-white w-full max-w-6xl rounded-t-[2.5rem] md:rounded-[4rem] overflow-hidden relative shadow-2xl flex flex-col md:flex-row h-[92vh] md:h-auto md:max-h-[85vh] z-10"
+            >
+              <div className={`${activeData.accent} p-8 md:p-12 lg:w-[380px] flex flex-col justify-between border-r border-slate-100 shrink-0`}>
                 <div>
-                   <ShieldCheck className="text-[#FDBA12] mb-10" size={42} />
-                   <h3 className="text-2xl font-black tracking-tighter leading-none mb-4">Academic <br/>Audit Dossier.</h3>
-                   <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-10">Triarch Governance v2.6</p>
-                   <div className="space-y-6">
-                      {[ { label: "ID", val: "TFD-9921" }, { label: "Auditor", val: "M. Sagar" }, { label: "Status", val: "Finalized" } ].map(item => (
-                        <div key={item.label}>
-                           <p className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-1">{item.label}</p>
-                           <p className="text-xs font-bold text-white/90">{item.val}</p>
+                   <div className="flex justify-between items-start mb-6 md:mb-10">
+                    <activeData.icon style={{ color: activeData.color }} className="w-10 h-10 md:w-14 md:h-14" />
+                    <button onClick={() => setSelectedId(null)} className="md:hidden p-2 bg-white/50 rounded-full"><X size={20} /></button>
+                   </div>
+                   <h2 className="text-3xl md:text-5xl font-black text-[#0F172A] tracking-tighter leading-[0.9] mb-3 md:mb-4">{activeData.title}</h2>
+                   <p className="text-[#5051CE] font-bold text-[10px] md:text-xs tracking-widest uppercase mb-6 md:mb-12">{activeData.grade}</p>
+                   
+                   <div className="grid grid-cols-2 md:grid-cols-1 gap-3 md:gap-4">
+                      {activeData.outcomes.map(o => (
+                        <div key={o} className="flex items-center gap-2 md:gap-3">
+                           <CheckCircle2 size={14} className="text-[#5051CE] shrink-0" />
+                           <span className="text-[8px] md:text-[10px] font-black uppercase text-slate-500 tracking-wider leading-none">{o}</span>
                         </div>
                       ))}
                    </div>
                 </div>
+                <div className="hidden md:block pt-10 border-t border-slate-200/50 mt-10">
+                   <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-[10px] font-bold text-emerald-600 uppercase">Triarch Audited 2026</span>
+                   </div>
+                </div>
               </div>
 
-              {/* Main Content Area */}
-              <div className="flex-1 p-8 md:p-16 overflow-y-auto no-scrollbar bg-white">
-                <button onClick={() => setShowAudit(false)} className="absolute top-8 right-8 p-3 hover:bg-slate-50 rounded-2xl transition-all"><X size={20} /></button>
-                <div className="grid grid-cols-3 gap-4 mb-10">
-                   {[ { label: "Mastery", val: "88.4%", icon: Star, col: "text-amber-500" }, { label: "Attendance", val: "100%", icon: CheckCircle2, col: "text-emerald-500" }, { label: "Velocity", val: "+12.2%", icon: TrendingUp, col: "text-blue-500" } ].map(stat => (
-                     <div key={stat.label} className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                        <stat.icon size={16} className={`${stat.col} mb-3`} />
-                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
-                        <p className="text-xl font-black text-[#0F172A]">{stat.val}</p>
-                     </div>
-                   ))}
-                </div>
-                <h4 className="text-[10px] font-black text-[#5051CE] uppercase tracking-[0.3em] mb-6">Learning Matrix</h4>
-                <div className="h-40 w-full bg-slate-50 rounded-[2rem] flex items-end justify-around p-8 mb-10 border border-slate-100">
-                  {[80, 65, 90, 75, 85].map((h, i) => (
-                    <motion.div key={i} initial={{ height: 0 }} animate={{ height: `${h}%` }} transition={{ delay: 0.5 + (i*0.1) }} className="w-8 md:w-12 bg-[#5051CE] rounded-t-xl" />
-                  ))}
-                </div>
-                <div className="space-y-6">
-                   <h4 className="text-[10px] font-black text-[#0F172A] uppercase tracking-[0.3em] border-b border-slate-100 pb-4">Observations</h4>
-                   <p className="text-sm text-slate-500 font-medium leading-relaxed italic">"The student has shown exceptional growth in Algebraic Logic. We recommend focusing on Answer-Writing Aesthetics for the upcoming June simulation exams."</p>
+              <div className="flex-1 p-8 md:p-20 overflow-y-auto no-scrollbar relative bg-white pb-32 md:pb-20">
+                <button onClick={() => setSelectedId(null)} className="hidden md:block absolute top-10 right-10 p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl transition-all"><X size={20} /></button>
+
+                {activeData.isSpecial ? (
+                  <div className="max-w-3xl">
+                    <h4 className="text-[9px] md:text-xs font-black text-[#3B82F6] uppercase tracking-[0.3em] md:tracking-[0.4em] mb-4">Stream Mastery Protocols</h4>
+                    <h3 className="text-2xl md:text-3xl font-black text-[#0F172A] tracking-tighter mb-8 md:mb-12 leading-tight">Master your stream with competitive alignment.</h3>
+                    
+                    <div className="space-y-4 md:space-y-6">
+                      {activeData.streams?.map((stream, i) => (
+                        <div key={i} className="p-6 md:p-8 rounded-[2rem] border border-slate-100 bg-[#F8FAFF] group">
+                          <div className="flex items-center gap-4 mb-3 md:mb-4 text-[#3B82F6]">
+                            <stream.icon className="w-5 h-5" />
+                            <h5 className="text-lg md:text-xl font-black text-[#0F172A]">{stream.name}</h5>
+                          </div>
+                          <p className="text-xs md:text-sm text-slate-600 font-medium leading-relaxed mb-5">{stream.details}</p>
+                          <div className="inline-flex items-center gap-2 px-4 py-2 bg-sky-50 rounded-lg text-[9px] font-black uppercase tracking-widest text-[#3B82F6]">
+                             <GraduationCap className="w-4 h-4"/> {stream.focus}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="max-w-xl">
+                    <p className="text-lg md:text-xl text-slate-400 font-medium italic mb-8 md:mb-10 leading-relaxed">"{activeData.tagline}"</p>
+                    <p className="text-slate-600 text-sm md:text-base font-medium mb-10 md:mb-12 leading-relaxed">{activeData.description}</p>
+                    <div className="space-y-4 md:space-y-6">
+                      {activeData.curriculum?.map((item, i) => (
+                        <div key={i} className="flex gap-4 md:gap-6 p-5 md:p-6 rounded-[1.5rem] md:rounded-3xl border border-slate-50 bg-slate-50/30">
+                          <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-[#5051CE] font-black text-xs shrink-0">0{i+1}</div>
+                          <div>
+                            <h5 className="font-bold text-sm md:text-base text-[#0F172A] mb-1">{item.goal}</h5>
+                            <p className="text-[10px] md:text-xs text-slate-400 font-medium leading-normal">{item.detail}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="fixed md:static bottom-0 left-0 right-0 p-6 md:p-0 bg-white/80 backdrop-blur-lg md:bg-transparent border-t md:border-0 border-slate-100 grid grid-cols-2 gap-3 mt-12 md:mt-16 z-50">
+                  <a href={`https://wa.me/919315956745`} className="flex items-center justify-center gap-2 bg-[#25D366] text-white py-4 md:py-6 rounded-xl md:rounded-[2rem] font-black text-[9px] md:text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all">
+                    <MessageCircle className="w-4 h-4" /> WhatsApp
+                  </a>
+                  <a href={`tel:+919315956745`} className="flex items-center justify-center gap-2 bg-[#0F172A] text-white py-4 md:py-6 rounded-xl md:rounded-[2rem] font-black text-[9px] md:text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all">
+                    <Phone className="w-4 h-4" /> Call Now
+                  </a>
                 </div>
               </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
+
+      {/* --- FINAL CTA --- */}
+      <section className="py-20 md:py-40 px-4 md:px-6">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="max-w-5xl mx-auto bg-[#0F172A] rounded-[3rem] md:rounded-[5rem] p-10 md:p-24 text-center relative overflow-hidden">
+          <div className="relative z-10">
+            <GraduationCap className="text-[#FDBA12] mx-auto mb-8 md:mb-10 w-12 h-12 md:w-16 md:h-16" />
+            <h2 className="text-4xl md:text-7xl font-black text-white tracking-tighter mb-8 md:mb-12 leading-[0.9] md:leading-[0.8]">Ready to <br/><span className="text-[#5051CE]">Ascend?</span></h2>
+            <a href="/contact" className="inline-flex items-center justify-center w-full md:w-auto gap-4 bg-white text-[#0F172A] px-10 md:px-14 py-5 md:py-7 rounded-2xl md:rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] active:scale-105 transition-transform">Begin Engagement <ChevronRight className="w-5 h-5" /></a>
+          </div>
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#5051CE]/10 to-transparent pointer-events-none" />
+        </motion.div>
+      </section>
 
       <Footer />
     </div>
