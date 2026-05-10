@@ -1,35 +1,39 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Bot, User } from "lucide-react";
+import { MessageCircle, X, Bot, ExternalLink, Send, MessageSquare } from "lucide-react";
+import Link from "next/link";
 
-const PREDEFINED_QA = [
+// --- KNOWLEDGE ENGINE ---
+const KNOWLEDGE_BASE = [
   { 
-    id: 1, 
+    keywords: ["mentor", "teacher", "select", "quality", "who"], 
     question: "How do you select mentors?", 
-    answer: "We follow a 4-step process: Subject Audits, Pedagogy Tests, Background Checks, and a Senior Mentor Demo. Only 1 in 10 pass." 
+    answer: "Our 'Surgical Audit' involves 4 stages: Subject Mastery, Pedagogy Tests, Background Forensics, and Senior Demos. We only onboard the top 10%.",
+    link: "/why-choose-us",
+    linkText: "View Audit Process"
   },
   { 
-    id: 2, 
-    question: "Is there a free trial?", 
-    answer: "Yes! We offer a complimentary 1-on-1 diagnostic session at your home to match the right mentor." 
+    keywords: ["trial", "free", "demo", "book", "test"], 
+    question: "Can I book a trial?", 
+    answer: "Yes. We offer a complimentary 1-on-1 diagnostic session at your home to analyze your child's specific learning gaps.",
+    link: "/contact",
+    linkText: "Schedule Diagnostic"
   },
   { 
-    id: 3, 
-    question: "What grades do you cover?", 
-    answer: "We cover all subjects from 1st to 10th, and Science, Arts, and Commerce for 11th & 12th." 
-  },
-  { 
-    id: 4, 
-    question: "How do I track progress?", 
-    answer: "Parents get a digital dashboard with weekly 'Performance Audits' and real-time attendance tracking." 
+    keywords: ["program", "subject", "class", "grade", "cuet", "science", "commerce"], 
+    question: "What do you cover?", 
+    answer: "We provide specialized instruction for K-10 (All subjects) and 11th-12th (Science, Commerce, Humanities), plus competitive CUET prep.",
+    link: "/programs",
+    linkText: "Explore Programs"
   }
 ];
 
 export default function TudoChatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{ role: 'bot' | 'user', text: string }[]>([
-    { role: 'bot', text: "Hi! I'm Tudo. How can I help you with your child's education today?" }
+  const [inputValue, setInputValue] = useState("");
+  const [messages, setMessages] = useState([
+    { role: 'bot', text: "Protocol initiated. I am Tudo. How can I help you today?", hasLinks: false }
   ]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -39,95 +43,122 @@ export default function TudoChatbot() {
     }
   }, [messages, isOpen]);
 
-  const handleOptionClick = (qa: typeof PREDEFINED_QA[0]) => {
-    setMessages(prev => [...prev, { role: 'user', text: qa.question }]);
-    
-    // Simulate thinking
+  const processChat = (userInput: string) => {
+    const input = userInput.toLowerCase();
+    setMessages(prev => [...prev, { role: 'user', text: userInput, hasLinks: false }]);
+
     setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'bot', text: qa.answer }]);
+      const match = KNOWLEDGE_BASE.find(item => 
+        item.keywords.some(keyword => input.includes(keyword))
+      );
+
+      if (match) {
+        setMessages(prev => [...prev, { 
+          role: 'bot', 
+          text: match.answer, 
+          hasLinks: true, 
+          href: match.link, 
+          hrefText: match.linkText 
+        }]);
+      } else {
+        setMessages(prev => [...prev, { 
+          role: 'bot', 
+          text: "I'm still learning that protocol. For immediate human assistance, please use the WhatsApp link below.", 
+          hasLinks: false 
+        }]);
+      }
     }, 600);
   };
 
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim()) return;
+    processChat(inputValue);
+    setInputValue("");
+  };
+
   return (
-    <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end">
+    <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[110] flex flex-col items-end">
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="mb-4 w-[350px] md:w-[400px] h-[500px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 flex flex-col overflow-hidden"
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            /* FIXED SIZING: Uses viewport-based height but caps it to prevent "full screen" feel */
+            className="mb-4 w-[calc(100vw-3rem)] md:w-[400px] h-[70vh] max-h-[600px] bg-white rounded-[2.5rem] shadow-[0_30px_90px_-20px_rgba(80,81,206,0.3)] border border-slate-100 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="p-6 bg-[#5051CE] text-white flex items-center justify-between">
+            <div className="p-6 md:p-8 bg-[#5051CE] text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
                   <Bot size={20} />
                 </div>
                 <div>
-                  <h3 className="font-bold leading-none">Tudo</h3>
-                  <p className="text-[10px] opacity-70 uppercase tracking-widest mt-1">AI Assistant</p>
+                  <h3 className="font-black text-[12px] tracking-widest uppercase">Tudo v2.6</h3>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                    <p className="text-[8px] font-bold text-white/50 uppercase tracking-widest">Active</p>
+                  </div>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="hover:bg-white/10 p-2 rounded-full transition-colors">
-                <X size={20} />
+              <button onClick={() => setIsOpen(false)} className="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-colors">
+                <X size={18} />
               </button>
             </div>
 
             {/* Chat Body */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50 scroll-smooth">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50 scrollbar-hide">
               {messages.map((msg, i) => (
-                <motion.div
-                  initial={{ opacity: 0, x: msg.role === 'bot' ? -10 : 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  key={i}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div className={`max-w-[80%] p-4 rounded-2xl text-sm font-medium leading-relaxed shadow-sm ${
+                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] p-4 rounded-2xl text-[13px] font-medium leading-relaxed ${
                     msg.role === 'user' 
-                      ? 'bg-[#5051CE] text-white rounded-tr-none' 
-                      : 'bg-white text-slate-700 rounded-tl-none border border-slate-100'
+                      ? 'bg-[#5051CE] text-white rounded-tr-none shadow-lg shadow-[#5051CE]/10' 
+                      : 'bg-white text-slate-700 rounded-tl-none border border-slate-100 shadow-sm'
                   }`}>
                     {msg.text}
+                    {(msg as any).hasLinks && (
+                      <Link href={(msg as any).href} className="mt-3 flex items-center justify-between gap-2 p-3 bg-slate-50 rounded-xl text-[#5051CE] font-bold text-[10px] uppercase tracking-widest hover:bg-[#5051CE] hover:text-white transition-all">
+                        {(msg as any).hrefText} <ExternalLink size={12} />
+                      </Link>
+                    )}
                   </div>
-                </motion.div>
+                </div>
               ))}
-              
-              {/* Option Chips */}
-              <div className="pt-4 flex flex-wrap gap-2">
-                {PREDEFINED_QA.map((qa) => (
-                  <button
-                    key={qa.id}
-                    onClick={() => handleOptionClick(qa)}
-                    className="text-[11px] font-bold py-2 px-4 rounded-full border border-slate-200 bg-white text-[#5051CE] hover:bg-[#5051CE] hover:text-white transition-all shadow-sm"
-                  >
-                    {qa.question}
-                  </button>
-                ))}
-              </div>
             </div>
 
-            {/* Simple Footer */}
-            <div className="p-4 bg-white border-t border-slate-100 text-center">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                By Triarch Group
-              </p>
+            {/* Input & Handover */}
+            <div className="p-5 bg-white border-t border-slate-100 gap-3 flex flex-col">
+              <form onSubmit={handleSend} className="relative">
+                <input 
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Ask about trials, fees..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-5 pr-12 text-[13px] font-medium focus:outline-none focus:border-[#5051CE] transition-all"
+                />
+                <button type="submit" className="absolute right-1.5 top-1.5 w-9 h-9 bg-[#5051CE] rounded-xl flex items-center justify-center text-white active:scale-90 transition-transform">
+                  <Send size={16} />
+                </button>
+              </form>
+
+              <button 
+                onClick={() => window.open("https://wa.me/919315956745", "_blank")}
+                className="w-full bg-[#25D366] text-white py-3.5 rounded-2xl font-black text-[9px] uppercase tracking-[0.2em] flex items-center justify-center gap-2"
+              >
+                <MessageSquare size={14} /> Human Support (WhatsApp)
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Floating Toggle Button */}
+      {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-16 h-16 bg-[#5051CE] rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 transition-transform active:scale-95 group relative"
+        className="w-14 h-14 md:w-16 md:h-16 bg-[#5051CE] rounded-2xl flex items-center justify-center text-white shadow-2xl hover:scale-105 active:scale-95 transition-all shadow-[#5051CE]/30"
       >
-        {isOpen ? <X size={28} /> : <MessageCircle size={28} />}
-        {!isOpen && (
-          <span className="absolute right-20 bg-[#0F172A] text-white px-4 py-2 rounded-xl text-sm font-bold shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-            Talk to Tudo!
-          </span>
-        )}
+        {isOpen ? <X size={24} /> : <MessageCircle size={24} />}
       </button>
     </div>
   );

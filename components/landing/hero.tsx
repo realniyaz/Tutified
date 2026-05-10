@@ -1,139 +1,149 @@
 "use client";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { ArrowRight, MessageCircle, Star, CheckCircle2, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight, Fingerprint, MapPin, SearchCheck, Rocket } from "lucide-react";
+
+// --- TYPES & INTERFACES ---
+interface Slide {
+  id: number;
+  label: string;
+  icon: React.ElementType;
+  iconColor?: string;
+  titleHtml: string;
+  excerpt: string;
+}
+
+const SLIDES: Slide[] = [
+  {
+    id: 1,
+    label: "Institutional Identity",
+    icon: Fingerprint,
+    titleHtml: "We don't match tutors; <br/> we blueprint <span class='font-serif italic font-light text-[#5051CE]'>Intellect.</span>",
+    excerpt: "Tutified bridges potential and performance using forensic auditing protocols to build intellectual sovereignty."
+  },
+  {
+    id: 2,
+    label: "Market Forensics",
+    icon: MapPin,
+    iconColor: "#FDBA12",
+    titleHtml: "Delhi and Noida’s answer to <br/> unstoppable <span class='font-serif italic font-light text-[#5051CE]'>Chaos.</span>",
+    excerpt: "The NCR marketplace is starving for managed consistency. We deliver Ivy-League standard instruction to your doorstep."
+  },
+  {
+    id: 3,
+    label: "System Safety",
+    icon: SearchCheck,
+    titleHtml: "The audited, vetted, and <br/> reliable alternative to <span class='font-serif italic font-light text-[#5051CE]'>Marketplaces.</span>",
+    excerpt: "Safety is not optional. We run deeper forensics on our mentors than any standard agency, verified by Triarch Group governance."
+  },
+  {
+    id: 4,
+    label: "Future Architecture",
+    icon: Rocket,
+    titleHtml: "Early development for the <br/> future-ready <span class='font-serif italic font-light text-[#5051CE]'>Mind.</span>",
+    excerpt: "From Junior Foundation to Competitive Mastery (CUET), our protocols are optimized for cognitive load, not rote memory."
+  }
+];
 
 export default function Hero() {
-  const FADE_UP_ANIMATION = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+  const [index, setIndex] = useState(0);
+
+  // Auto-Slideshow timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % SLIDES.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleWhatsApp = () => {
+    const msg = encodeURIComponent("Hello Tutified! I want to initiate the pedagogical onboarding protocol.");
+    window.open(`https://wa.me/919315956745?text=${msg}`, "_blank");
   };
 
+  // Extract current slide data for cleaner JSX
+  const currentSlide = SLIDES[index];
+  const IconComponent = currentSlide.icon;
+
   return (
-    // CHANGE: Removed min-h-screen, added specific pt for the floating navbar
-    <section className="relative flex flex-col pt-32 md:pt-40 pb-20 px-6 md:px-12 lg:px-24 overflow-hidden bg-[#F8FAFF]">
+    <section className="relative min-h-screen flex flex-col items-center justify-center pt-32 pb-24 px-6 overflow-hidden bg-[#0F172A]">
       
-      {/* Premium Ambient Background */}
+      {/* 1. Cinematic Background Layer */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] bg-[#5051CE]/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[5%] right-[-5%] w-[500px] h-[500px] bg-[#FDBA12]/5 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#5051CE]/10 via-transparent to-transparent opacity-60" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full">
-        {/* CHANGE: Added items-start instead of items-center to prevent "floating" in middle */}
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-6 items-start">
-          
-          {/* Left Column: Content */}
-          <motion.div 
-            initial="initial"
-            animate="animate"
-            transition={{ staggerChildren: 0.08 }}
-            className="flex flex-col items-start pt-4" // Minor internal padding to align with image top
+      {/* 2. The Slideshow Container */}
+      <div className="relative z-10 max-w-7xl mx-auto w-full text-center flex flex-col items-center">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col items-center w-full"
           >
-            <motion.div 
-              variants={FADE_UP_ANIMATION}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#5051CE]/10 shadow-sm mb-8"
-            >
-              <span className="flex h-1.5 w-1.5 rounded-full bg-[#5051CE]" />
-              <span className="text-[10px] font-black text-[#5051CE] uppercase tracking-[0.2em]">
-                Delhi-NCR Premium Mentorship
+            {/* Label Badge */}
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 rounded-full border border-white/10 mb-10 backdrop-blur-xl">
+              <div style={{ color: currentSlide.iconColor || "#FDBA12" }}>
+                <IconComponent size={16} />
+              </div>
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
+                {currentSlide.label}
               </span>
-            </motion.div>
-
-            <motion.h1 
-              variants={FADE_UP_ANIMATION}
-              className="text-6xl md:text-8xl lg:text-[100px] font-[1000] text-[#0F172A] leading-[0.85] tracking-[-0.04em] mb-8"
-            >
-              ELITE HOME <br />
-              <span className="text-[#5051CE] italic">TUITIONS.</span>
-            </motion.h1>
-
-            <motion.p 
-              variants={FADE_UP_ANIMATION}
-              className="text-lg text-slate-500 max-w-[500px] leading-relaxed mb-10 font-medium"
-            >
-              Excellence delivered to your doorstep. We bridge the gap between potential and performance with Ivy-League standard personal mentoring.
-            </motion.p>
-
-            <motion.div 
-  variants={FADE_UP_ANIMATION}
-  className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
->
-  {/* Call Button - Linked to Phone */}
-  <a href="tel:+919315956745" className="w-full sm:w-auto">
-    <button className="w-full group flex items-center justify-center gap-3 bg-[#5051CE] text-white px-9 py-4.5 rounded-2xl font-bold transition-all hover:bg-[#3F40A8] shadow-xl shadow-[#5051CE]/20 active:scale-95">
-      Book Free Trial
-      <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-    </button>
-  </a>
-  
-  {/* WhatsApp Button - Linked with Pre-filled Message */}
-  <a 
-    href="https://wa.me/919315956745?text=Hi%20Tutified!%20I'm%20interested%20in%20booking%20a%20free%20home%20tuition%20trial." 
-    target="_blank" 
-    rel="noopener noreferrer"
-    className="w-full sm:w-auto"
-  >
-    <button className="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-700 px-9 py-4.5 rounded-2xl font-bold hover:bg-slate-50 hover:border-[#25D366]/30 transition-all shadow-sm active:scale-95">
-      <MessageCircle size={18} className="text-[#25D366]" />
-      WhatsApp Us
-    </button>
-  </a>
-</motion.div>
-
-            <motion.div 
-              variants={FADE_UP_ANIMATION}
-              className="mt-14 flex flex-wrap gap-x-10 gap-y-4"
-            >
-              <div className="flex items-center gap-2 text-slate-400 font-bold">
-                <CheckCircle2 size={16} className="text-[#5051CE]" />
-                <span className="text-[10px] uppercase tracking-widest">Background Verified</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-400 font-bold">
-                <CheckCircle2 size={16} className="text-[#5051CE]" />
-                <span className="text-[10px] uppercase tracking-widest">Targeted Results</span>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* Right Column: Visual Component */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="relative hidden lg:block"
-          >
-            <div className="relative aspect-[4/5] w-full max-w-[440px] ml-auto bg-white rounded-[3.5rem] shadow-[0_40px_80px_-20px_rgba(80,81,206,0.12)] border-[10px] border-white overflow-hidden group">
-              <Image 
-                src="/hero-tutoring.jpg" 
-                alt="Tutoring Session" 
-                fill 
-                className="object-cover group-hover:scale-105 transition-transform duration-700" 
-              />
             </div>
 
-            {/* Social Proof Overlap */}
-            <motion.div 
-              initial={{ x: 20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="absolute bottom-10 -left-12 bg-white/90 backdrop-blur-xl p-5 rounded-3xl shadow-xl border border-white/50 z-20 flex items-center gap-4"
-            >
-               <div className="flex -space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-[#5051CE] border-2 border-white flex items-center justify-center text-[10px] text-white font-bold">AJ</div>
-                  <div className="w-10 h-10 rounded-full bg-amber-400 border-2 border-white" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-0.5">
-                    {[...Array(5)].map((_, i) => <Star key={i} size={12} className="fill-amber-400 text-amber-400" />)}
-                  </div>
-                  <p className="text-[10px] font-black text-[#0F172A] uppercase tracking-tighter">500+ Happy Parents</p>
-                </div>
-            </motion.div>
+            {/* Cinematic Headline */}
+            <h1 
+              className="text-5xl md:text-7xl lg:text-[100px] font-[1000] text-white tracking-[-0.05em] leading-[0.85] mb-12 max-w-6xl"
+              dangerouslySetInnerHTML={{ __html: currentSlide.titleHtml }}
+            />
+            
+            {/* Humane Excerpt */}
+            <p className="text-white/50 text-lg md:text-xl max-w-[650px] leading-relaxed mb-16 font-medium">
+              {currentSlide.excerpt}
+            </p>
           </motion.div>
-
+        </AnimatePresence>
+        
+        {/* 3. Global CTA (Static) */}
+        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4">
+          <button 
+            onClick={handleWhatsApp}
+            className="w-full bg-[#5051CE] text-white px-12 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#5051CE]/20 flex items-center justify-center gap-3"
+          >
+            Book Demo <ArrowRight size={16} />
+          </button>
+          
+          <Link href="/programs" className="w-full sm:w-auto">
+            <button className="w-full border border-white/10 text-white px-12 py-5 rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] hover:bg-white/5 transition-all active:scale-95">
+              The Programs
+            </button>
+          </Link>
         </div>
+
+        {/* 4. Slide Progress Dots */}
+        <div className="flex items-center gap-3 mt-24">
+          {SLIDES.map((_, i) => (
+            <button 
+              key={i} 
+              onClick={() => setIndex(i)}
+              className={`h-1.5 rounded-full transition-all duration-500 ${i === index ? 'w-12 bg-white' : 'w-1.5 bg-white/20'}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 5. FIXED SYSTEM STATUS: 2026 */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm bg-white p-2 rounded-full shadow-2xl border border-slate-100 flex items-center justify-between px-6">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 leading-none">System Live / NCR</span>
+        </div>
+        <div className="w-[1px] h-4 bg-slate-100" />
+        <span className="text-[10px] font-black text-[#5051CE] uppercase tracking-widest">Tutified 2026</span>
       </div>
     </section>
   );
